@@ -34,7 +34,7 @@ services:
     image: postgres:17
     command: postgres -c log_destination=stderr -c log_statement=all -c log_connections=on -c log_disconnections=on
     ports:
-      - ${POSTGRES_PORT_OUTER}:${POSTGRES_PORT_INNER}
+      - ${DATABASE_PORT_OUTER}:${DATABASE_PORT_INNER}
     volumes:
       - db:/var/lib/postgres/data
     environment:
