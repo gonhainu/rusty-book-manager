@@ -1289,9 +1289,13 @@ checksum = "8a0d197bd2c9dc6e53b84da9556a69ba4cdfab8619eb41a8bd1cc2027a0f6b1d"
 name = "rusty-book-manaager"
 version = "0.1.0"
 dependencies = [
+ "adapter",
  "anyhow",
+ "api",
  "axum",
+ "registry",
  "rstest",
+ "shared",
  "sqlx",
  "tokio",
 ]
@@ -1393,6 +1397,9 @@ dependencies = [
 [[package]]
 name = "shared"
 version = "0.1.0"
+dependencies = [
+ "anyhow",
+]
 
 [[package]]
 name = "shlex"
