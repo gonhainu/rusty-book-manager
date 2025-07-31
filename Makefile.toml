@@ -150,6 +150,25 @@ args = [
   "${@}",
 ]
 
+[tasks.initial-setup]
+extend = "set-env-local"
+command = "docker"
+args = [
+  "run",
+  "-it",
+  "--rm",
+  "--network",
+  "host",
+  "-v",
+  "${PWD}:/work",
+  "postgres:17",
+  "psql",
+  "${DATABASE_URL}",
+  "-f",
+  "/work/data/initial_setup.sql",
+]
+
+
 [tasks.compose]
 extend = "set-env-docker"
 command = "docker"
