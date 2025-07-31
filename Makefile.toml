@@ -147,8 +147,7 @@ args = [
   "postgres:17",
   "psql",
   "${DATABASE_URL}",
-  "-f",
-  "/work/data/initial_setup.sql",
+  "${@}",
 ]
 
 [tasks.compose]
