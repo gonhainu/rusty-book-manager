@@ -26,7 +26,7 @@ async fn bootstrap() -> Result<()> {
     let addr = SocketAddr::new(Ipv4Addr::LOCALHOST.into(), 8080);
     let listener = TcpListener::bind(&addr).await?;
 
-    println!("Listening on {}", addr);
+    println!("Listening on {addr}");
 
     axum::serve(listener, app).await.map_err(Error::from)
 }
