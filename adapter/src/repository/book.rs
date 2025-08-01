@@ -15,7 +15,18 @@ pub struct BookRepositoryImpl {
 #[async_trait]
 impl BookRepository for BookRepositoryImpl {
     async fn create(&self, event: CreateBook) -> Result<()> {
-        todo!()
+        sqlx::query!(
+            r#"
+                INSERT INTO book (title, author, isbn, description)
+                VALUES ($1, $2, $3, $4)
+            "#,
+            event.title,
+            event.author,
+            event.isbn,
+            event.description
+        )
+        .execute(self.db.inner_ref())
+        .await?;
     }
 
     async fn find_all(&self) -> Result<Vec<Book>> {
