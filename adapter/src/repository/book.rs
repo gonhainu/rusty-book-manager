@@ -51,6 +51,23 @@ impl BookRepository for BookRepositoryImpl {
     }
 
     async fn find_by_id(&self, book_id: Uuid) -> Result<Option<Book>> {
-        todo!();
+        let row: Option<BookRow> = sqlx::query_as!(
+            BookRow,
+            r#"
+                SELECT
+                    book_id,
+                    title,
+                    author,
+                    isbn,
+                    description
+                FROM books
+                WHERE book_id = $1
+            "#,
+            book_id
+        )
+        .fetch_optional(self.db.inner_ref())
+        .await?;
+
+        Ok(row.map(Book::from))
     }
 }
