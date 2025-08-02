@@ -2,7 +2,7 @@ use std::net::{Ipv4Addr, SocketAddr};
 
 use adapter::database::connect_database_with;
 use anyhow::Context;
-use anyhow::{Error, Result};
+use anyhow::Result;
 use api::route::{book::build_book_routers, health::build_health_check_routes};
 use axum::Router;
 use registry::AppRegistry;
@@ -49,7 +49,7 @@ async fn bootstrap() -> Result<()> {
     tracing::info!("Listening on {addr}");
     axum::serve(listener, app)
         .await
-        .contaext("Unexpected error happened in server")
+        .context("Unexpected error happened in server")
         .inspect_err(|e| {
             tracing::error!(
                 error.cause_chain = ?e,
