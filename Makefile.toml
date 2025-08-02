@@ -79,7 +79,6 @@ args = ["check"]
 [tasks.watch]
 extend = "set-env-local"
 dependencies = ["before-build"]
-command = "cargo"
 run_task = [{ name = ["fmt", "clippy", "test"] }]
 watch = true
 
