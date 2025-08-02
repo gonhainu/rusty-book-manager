@@ -1,6 +1,8 @@
 use std::net::{Ipv4Addr, SocketAddr};
+use std::sync::Arc;
 
 use adapter::database::connect_database_with;
+use adapter::redis::RedisClient;
 use anyhow::Context;
 use anyhow::Result;
 use api::route::{book::build_book_routers, health::build_health_check_routes};
@@ -25,8 +27,9 @@ async fn main() -> Result<()> {
 async fn bootstrap() -> Result<()> {
     let app_config = AppConfig::new()?;
     let pool = connect_database_with(&app_config.database);
+    let kv = Arc::new(RedisClient::new(&app_config.redis)?);
 
-    let registry = AppRegistry::new(pool);
+    let registry = AppRegistry::new(pool, kv, app_config);
 
     let app = Router::new()
         .merge(build_health_check_routes())
