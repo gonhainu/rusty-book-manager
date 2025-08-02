@@ -99,7 +99,7 @@ mod tests {
         assert_eq!(res.len(), 1);
 
         let book_id = res[0].id;
-        let res = repo.find_by_id(book_id.into()).await?;
+        let res = repo.find_by_id(book_id).await?;
         assert!(res.is_some());
 
         let Book {
