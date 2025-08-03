@@ -1,6 +1,7 @@
 use async_trait::async_trait;
 use derive_new::new;
 use kernel::model::id::UserId;
+use kernel::model::role::Role;
 use kernel::model::user::{
     User,
     event::{CreateUser, DeleteUser, UpdateUserPassword, UpdateUserRole},
@@ -44,7 +45,29 @@ impl UserRepository for UserRepositoryImpl {
     }
 
     async fn find_all(&self) -> AppResult<Vec<User>> {
-        todo!()
+        let users = sqlx::query_as!(
+            UserRow,
+            r#"
+                SELECT
+                    u.user_id,
+                    u.name,
+                    u.email,
+                    r.name as role_name,
+                    u.created_at,
+                    u.updated_at
+                FROM users AS u
+                INNER JOIN roles AS r USING(role_id)
+                ORDER BY u.created_at DESC
+            "#
+        )
+        .fetch_all(self.db.inner_ref())
+        .await
+        .map_err(AppError::SpecificOperationError)?
+        .into_iter()
+        .filter_map(|row| User::try_from(row).ok())
+        .collect();
+
+        Ok(users)
     }
 
     async fn create(&self, event: CreateUser) -> AppResult<User> {
