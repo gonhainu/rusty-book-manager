@@ -71,7 +71,37 @@ impl UserRepository for UserRepositoryImpl {
     }
 
     async fn create(&self, event: CreateUser) -> AppResult<User> {
-        todo!()
+        let user_id = UserId::new();
+        let hashed_password = hash_password(&event.password)?;
+        let role = Role::User;
+
+        let res = sqlx::query!(
+            r#"
+                INSERT INTO users(user_id, name, email, password_hash, role_id)
+                SELECT $1, $2, $3, $4, role_id FROM roles WHERE name = $5;
+            "#,
+            user_id as _,
+            event.name,
+            event.email,
+            hashed_password,
+            role.as_ref()
+        )
+        .execute(self.db.inner_ref())
+        .await
+        .map_err(AppError::SpecificOperationError)?;
+
+        if res.rows_affected() < 1 {
+            return Err(AppError::NoRowsAffectedError(
+                "No user has been created".into(),
+            ));
+        }
+
+        Ok(User {
+            id: user_id,
+            name: event.name,
+            email: event.email,
+            role,
+        })
     }
 
     async fn update_password(&self, event: UpdateUserPassword) -> AppResult<()> {
@@ -85,4 +115,8 @@ impl UserRepository for UserRepositoryImpl {
     async fn delete(&self, event: DeleteUser) -> AppResult<()> {
         todo!()
     }
+}
+
+fn hash_password(password: &str) -> AppResult<String> {
+    bcrypt::hash(password, bcrypt::DEFAULT_COST).map_err(AppError::from)
 }
