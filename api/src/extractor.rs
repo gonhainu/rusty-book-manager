@@ -4,7 +4,7 @@ use axum::{RequestPartsExt, async_trait};
 use axum_extra::TypedHeader;
 use axum_extra::headers::Authorization;
 use axum_extra::headers::authorization::Bearer;
-use kernel::mode::auth::AccessToken;
+use kernel::model::auth::AccessToken;
 use kernel::model::id::UserId;
 use kernel::model::role::Role;
 use kernel::model::user::User;
