@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE users\n                SET role_id = (\n                    SELECT role_id FROM roles WHERE name = $2\n                )\n                WHERE user_id = $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "30541c28ac2572a4d0b28798c5b31126802a628845b23e4545844c22129edc22"
+}

@@ -161,7 +161,21 @@ impl UserRepository for UserRepositoryImpl {
     }
 
     async fn delete(&self, event: DeleteUser) -> AppResult<()> {
-        todo!()
+        let res = sqlx::query!(
+            r#"
+                DELETE FROM users WHERE user_id = $1
+            "#,
+            event.user_id as _
+        )
+        .execute(self.db.inner_ref())
+        .await
+        .map_err(AppError::SpecificOperationError)?;
+
+        if res.rows_affected() < 1 {
+            return Err(AppError::EntityNotFound("Specified user not found".into()));
+        }
+
+        Ok(())
     }
 }
 
