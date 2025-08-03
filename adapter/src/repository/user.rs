@@ -138,7 +138,26 @@ impl UserRepository for UserRepositoryImpl {
     }
 
     async fn update_role(&self, event: UpdateUserRole) -> AppResult<()> {
-        todo!()
+        let res = sqlx::query!(
+            r#"
+                UPDATE users
+                SET role_id = (
+                    SELECT role_id FROM roles WHERE name = $2
+                )
+                WHERE user_id = $1
+            "#,
+            event.user_id as _,
+            event.role.as_ref()
+        )
+        .execute(self.db.inner_ref())
+        .await
+        .map_err(AppError::SpecificOperationError)?;
+
+        if res.rows_affected() < 1 {
+            return Err(AppError::EntityNotFound("Specified user not found".into()));
+        }
+
+        Ok(())
     }
 
     async fn delete(&self, event: DeleteUser) -> AppResult<()> {
