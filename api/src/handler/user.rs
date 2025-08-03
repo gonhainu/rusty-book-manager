@@ -82,6 +82,10 @@ pub async fn change_role(
     Ok(StatusCode::OK)
 }
 
+pub async fn get_current_user(user: AuthorizedUser) -> Json<UserResponse> {
+    Json(UserResponse::from(user.user))
+}
+
 pub async fn change_password(
     user: AuthorizedUser,
     State(registry): State<AppRegistry>,
