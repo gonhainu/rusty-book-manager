@@ -5,6 +5,7 @@ A modern book management system built with Rust, featuring user authentication, 
 ## Features
 
 - 📚 **Book Management**: Create, list, and view books
+- 📋 **Checkout Management**: Check out and return books, view checkout history
 - 👥 **User Management**: User registration, authentication, and role management
 - 🔐 **Authentication**: JWT-based authentication with secure password hashing
 - 🛡️ **Authorization**: Role-based access control (Admin/User roles)
@@ -149,6 +150,13 @@ cargo make sqlx migrate info
 - `POST /v1/books` - Create book
 - `GET /v1/books` - List books
 - `GET /v1/books/{id}` - Get book details
+
+### Checkouts
+- `POST /v1/books/{book_id}/checkouts` - Check out a book
+- `PUT /v1/books/{book_id}/checkouts/{checkout_id}/returned` - Return a book
+- `GET /v1/books/checkouts` - List all checked out books
+- `GET /v1/books/{book_id}/checkout-history` - Get checkout history for a book
+- `GET /v1/users/me/checkouts` - Get current user's checkouts
 
 ### Health
 - `GET /health` - Basic health check
