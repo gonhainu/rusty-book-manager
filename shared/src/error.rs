@@ -4,7 +4,7 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum AppError {
     #[error("{0}")]
-    UnprocessableEnity(String),
+    UnprocessableEntity(String),
     #[error("{0}")]
     EntityNotFound(String),
     #[error("{0}")]
@@ -34,7 +34,7 @@ pub enum AppError {
 impl IntoResponse for AppError {
     fn into_response(self) -> axum::response::Response {
         let status_code = match self {
-            AppError::UnprocessableEnity(_) => StatusCode::UNPROCESSABLE_ENTITY,
+            AppError::UnprocessableEntity(_) => StatusCode::UNPROCESSABLE_ENTITY,
             AppError::EntityNotFound(_) => StatusCode::NOT_FOUND,
             AppError::ValidationError(_) | AppError::ConvertToUuidError(_) => {
                 StatusCode::BAD_REQUEST
