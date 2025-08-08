@@ -7,12 +7,14 @@ use anyhow::Context;
 use anyhow::Result;
 use api::route::{auth, v1};
 use axum::Router;
+use axum::http::Method;
 use registry::AppRegistry;
 use shared::config::AppConfig;
 use shared::env::{Environment, which};
 use tokio::net::TcpListener;
-use tower_http::LatencyUnit;
+use tower_http::cors::CorsLayer;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
+use tower_http::{LatencyUnit, cors};
 use tracing::Level;
 use tracing_subscriber::EnvFilter;
 use tracing_subscriber::layer::SubscriberExt;
@@ -22,6 +24,13 @@ use tracing_subscriber::util::SubscriberInitExt;
 async fn main() -> Result<()> {
     init_logger()?;
     bootstrap().await
+}
+
+fn cors() -> CorsLayer {
+    CorsLayer::new()
+        .allow_headers(cors::Any)
+        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
+        .allow_origin(cors::Any)
 }
 
 async fn bootstrap() -> Result<()> {
@@ -44,6 +53,7 @@ async fn bootstrap() -> Result<()> {
                         .latency_unit(LatencyUnit::Micros),
                 ),
         )
+        .layer(cors())
         .with_state(registry);
 
     let addr = SocketAddr::new(Ipv4Addr::LOCALHOST.into(), 8080);
